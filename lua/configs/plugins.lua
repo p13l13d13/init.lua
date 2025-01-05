@@ -40,6 +40,12 @@ require("lazy").setup({
         })
       end
     },
+    {
+      "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+      config = function()
+        require("lsp_lines").setup()
+      end,
+    },
     -- nvim in firefox. I'm not really using this right now, but wanted to keep it.
     { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
     -- Copilot AI.
@@ -49,10 +55,15 @@ require("lazy").setup({
       'renerocksai/telekasten.nvim',
       dependencies = { 'nvim-telescope/telescope.nvim' }
     },
+    "jvgrootveld/telescope-zoxide",
     -- Some improvements to neovim UI. Like LSP renaming, etc.
     { 'stevearc/dressing.nvim' },
     -- Cool features for rust.
-    'simrat39/rust-tools.nvim',
+    {
+      'mrcjkb/rustaceanvim',
+      version = '^5', -- Recommended
+      lazy = false,   -- This plugin is already lazy
+    },
     'nvim-tree/nvim-web-devicons',
     -- Keymap but in telescope
     {
@@ -94,15 +105,28 @@ require("lazy").setup({
     { "nvim-treesitter/nvim-treesitter-textobjects" },
     -- Quick jumps between jump points
     'theprimeagen/harpoon',
-    -- Jump at a char by typing it. press f/F or t/T and enjoy.
+    -- super quick jumps by S, f, F, t, T AAAAND treesitter
     {
-      'phaazon/hop.nvim',
-      branch = 'v2', -- optional but strongly recommended
-      config = function()
-        require 'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-      end,
-      name = 'hop'
+      "folke/flash.nvim",
+      event = "VeryLazy",
+      -- stylua: ignore
+      keys = {
+        { "s",         mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+        { "<Leader>s", mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash treesitter" },
+        { "S",         mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+        { "r",         mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+        { "R",         mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+        { "<c-s>",     mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+      },
     },
+    -- {
+    --   'phaazon/hop.nvim',
+    --   branch = 'v2', -- optional but strongly recommended
+    --   config = function()
+    --     require 'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+    --   end,
+    --   name = 'hop'
+    -- },
     { "tpope/vim-fugitive" },
     -- Plugin to edit obsidian notes in nvim.
     {
@@ -138,8 +162,8 @@ require("lazy").setup({
       'VonHeikemen/lsp-zero.nvim',
       branch = 'v4.x',
       dependencies = {
-        { "neovim/nvim-lspconfig"},
-       -- Autocompletion
+        { "neovim/nvim-lspconfig" },
+        -- Autocompletion
         { 'hrsh7th/nvim-cmp' },
         { 'hrsh7th/cmp-buffer' },
         { 'hrsh7th/cmp-path' },

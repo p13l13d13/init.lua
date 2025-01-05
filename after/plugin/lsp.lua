@@ -1,7 +1,7 @@
 local lsp_zero = require("lsp-zero")
 local cmp = require('cmp')
 
-local lsp_attach = function(client, bufnr)
+local lsp_attach = function(_, bufnr)
   local opts = { buffer = bufnr }
 
   vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
@@ -50,18 +50,18 @@ cmp.setup({
   })
 })
 
-require 'lspconfig'.rust_analyzer.setup {
-  settings = {
-    ['rust-analyzer'] = {
-      diagnostics = {
-        enable = false,
-      }
-    }
-  },
-  on_attach = function(_, bufnr)
-    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
-  end
-}
+-- require 'lspconfig'.rust_analyzer.setup {
+--   settings = {
+--     ['rust-analyzer'] = {
+--       diagnostics = {
+--         enable = false,
+--       }
+--     }
+--   },
+--   on_attach = function(_, bufnr)
+--     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+--   end
+-- }
 
 require 'lspconfig'.ts_ls.setup {}
 require 'lspconfig'.nil_ls.setup {}

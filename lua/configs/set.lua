@@ -48,8 +48,6 @@ vim.opt.isfname:append("@-@")
 
 -- Update times and timeouts.
 vim.o.updatetime = 150
-vim.o.timeoutlen = 300
-vim.o.ttimeoutlen = 10
 
 vim.o.termguicolors = true
 vim.o.background = "dark" -- or "light" for light mode
@@ -62,3 +60,7 @@ vim.keymap.set('n', '<leader>sc', function()
   vim.opt.spell = not vim.opt.spell:get()
   print("Spell checking: " .. (vim.opt.spell:get() and "ON" or "OFF"))
 end, { desc = "Toggle Spell Checking" })
+
+vim.diagnostic.config({
+  virtual_text = false,
+})

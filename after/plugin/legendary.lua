@@ -1,47 +1,8 @@
-local hop = require('hop')
-local directions = require('hop.hint').HintDirection
 local builtin = require('telescope.builtin')
 
 require('legendary').setup({
   extensions = { lazy_nvim = true },
   keymaps = {
-    -- HOP mappings
-        { 'f',
-          function()
-            hop.hint_char1({ direction = directions.AFTER_CURSOR })
-          end,
-          mode = { 'n', 'v' },
-          description = 'forward move to char'
-        },
-        { 'F',
-          function()
-            hop.hint_char1({ direction = directions.BEFORE_CURSOR })
-          end,
-          mode = { 'n', 'v' },
-          description = 'backward move to char'
-        },
-        { 't',
-          function()
-            hop.hint_char1({ direction = directions.AFTER_CURSOR })
-          end,
-          mode = { 'n', 'v' },
-          description = 'forward move before char'
-        },
-        { 'T',
-          function()
-            hop.hint_char1({ direction = directions.AFTER_CURSOR })
-          end,
-          mode = { 'n', 'v' },
-          description = 'backward move before char'
-        },
-
-        -- Rust tools mappings
-        {
-          '<leader>ha',
-          { n = '<Cmd>RustHoverActions<CR>' },
-          description = 'Hover action (rust-tools)',
-        },
-
         {
           '<leader>bf',
           { n = vim.lsp.buf.format },
@@ -96,7 +57,11 @@ require('legendary').setup({
           builtin.spell_suggest,
           description = 'telescope spell suggest',
         },
-
+        {
+          '<leader>fz',
+          require("telescope").extensions.zoxide.list,
+          description = 'telescope zoxide list',
+        },
         -- LSP mappings
         {
           'gd',
