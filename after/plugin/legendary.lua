@@ -102,10 +102,9 @@ require('legendary').setup({
         },
         {
           '<leader>z',
-          { n =  '<Cmd>NvimTreeToggle<CR>'},
-          description = 'rename symbol under cursor'
+          { n =  '<Cmd>Neotree filesystem reveal left toggle=true<CR>'},
+          description = 'open Neotree on the left'
         },
-        
         -- TODO: Add harpoon mappings  
         -- TODO: Add more lsp mappings
         -- TODO: Add terminal mapping

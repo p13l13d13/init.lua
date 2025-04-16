@@ -62,5 +62,7 @@ vim.keymap.set('n', '<leader>sc', function()
 end, { desc = "Toggle Spell Checking" })
 
 vim.diagnostic.config({
-  virtual_text = false,
+  virtual_text = true,
+  -- I use <leader>dl to toggle it, so they are disabled by default, because they're making such a mess
+  virtual_lines = { only_current_line = true }
 })

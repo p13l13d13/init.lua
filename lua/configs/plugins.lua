@@ -19,97 +19,57 @@ require("lazy").setup({
     frequency = 604800, -- Check for updates every week (in seconds)
   },
   spec = {
+    -- Core Neovim enhancements
+    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+    { "nvim-treesitter/nvim-treesitter-textobjects" },
+    { "nanotee/zoxide.vim" },
+    { 'jvgrootveld/telescope-zoxide' },
+    -- Language Support
+    { "ray-x/go.nvim",
+      dependencies = { "ray-x/guihua.lua", "neovim/nvim-lspconfig", "nvim-treesitter/nvim-treesitter" },
+      config = function() require("go").setup() end,
+      event = { "CmdlineEnter" },
+      ft = { "go", 'gomod' },
+      build = ':lua require("go.install").update_all_sync()'
+    },
+
+    -- LSP and Completion
     {
-      "nvim-tree/nvim-tree.lua",
-      version = "*",
-      lazy = false,
+      'VonHeikemen/lsp-zero.nvim',
+      branch = 'v4.x',
       dependencies = {
-        "nvim-tree/nvim-web-devicons",
-      },
-      config = function()
-        require("nvim-tree").setup {}
-      end
+        { "neovim/nvim-lspconfig" },
+        { 'hrsh7th/nvim-cmp' },
+        { 'hrsh7th/cmp-buffer' },
+        { 'hrsh7th/cmp-path' },
+        { 'hrsh7th/cmp-nvim-lsp' },
+        { 'hrsh7th/cmp-nvim-lua' }
+      }
     },
-    {
-      "kylechui/nvim-surround",
-      version = "*", -- Use for stability; omit to use `main` branch for the latest features
-      event = "VeryLazy",
-      config = function()
-        require("nvim-surround").setup({
-          -- Configuration here, or leave empty to use defaults
-        })
-      end
-    },
-    {
-      "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-      config = function()
-        require("lsp_lines").setup()
-      end,
-    },
-    -- nvim in firefox. I'm not really using this right now, but wanted to keep it.
-    { 'glacambre/firenvim', build = ":call firenvim#install(0)" },
-    -- Copilot AI.
-    { "github/copilot.vim" },
-    -- Telekasten is for notes taking
-    {
-      'renerocksai/telekasten.nvim',
-      dependencies = { 'nvim-telescope/telescope.nvim' }
-    },
-    "jvgrootveld/telescope-zoxide",
-    -- Some improvements to neovim UI. Like LSP renaming, etc.
-    { 'stevearc/dressing.nvim' },
-    -- Cool features for rust.
-    {
-      'mrcjkb/rustaceanvim',
-      version = '^5', -- Recommended
-      lazy = false,   -- This plugin is already lazy
-    },
-    'nvim-tree/nvim-web-devicons',
-    -- Keymap but in telescope
-    {
-      'mrjones2014/legendary.nvim',
-      -- sqlite is only needed if you want to  frequency sorting
-      requires = 'kkharji/sqlite.lua'
-    },
-    -- Debugging
-    'mfussenegger/nvim-dap',
-    {
-      'nvim-telescope/telescope.nvim',
-      requires = { { 'nvim-lua/plenary.nvim' } }
-    },
-    -- Better terminals, could be toggled + better positions
-    { 'akinsho/toggleterm.nvim', version = "*", config = true },
-    -- It's like the best 'minimal' git plugins for nvim. Look at the green lines on the left!
+
+    -- Git and Version Control
     {
       'lewis6991/gitsigns.nvim',
-      config = function()
-        require('gitsigns').setup()
-      end
+      config = function() require('gitsigns').setup() end
     },
-    -- My favourite theme! Just the best!
-    {
-      'ellisonleao/gruvbox.nvim',
-      name = 'gruvbox',
+    { "tpope/vim-fugitive" },
+
+    -- File Navigation and Search
+    { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } },
+    { 'mrjones2014/legendary.nvim', requires = 'kkharji/sqlite.lua' },
+    { "numToStr/Comment.nvim", 
+      config = function() require('Comment').setup() end 
     },
-    -- Functions' arguments, etc.
-    { "ray-x/lsp_signature.nvim" },
-    -- binds for commenting blocks
-    {
-      'numToStr/Comment.nvim',
-      config = function()
-        require('Comment').setup()
-      end
-    },
-    -- Why is it still a plugin???
-    { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },
-    { "nvim-treesitter/nvim-treesitter-textobjects" },
-    -- Quick jumps between jump points
-    'theprimeagen/harpoon',
-    -- super quick jumps by S, f, F, t, T AAAAND treesitter
-    {
-      "folke/flash.nvim",
+
+    -- UI Enhancements
+    { 'stevearc/dressing.nvim' },
+    { 'akinsho/toggleterm.nvim', version = "*", config = true },
+    { 'ellisonleao/gruvbox.nvim', name = 'gruvbox' },
+
+    -- Code Navigation and Editing
+    { "kylechui/nvim-surround", version = "*", event = "VeryLazy" },
+    { "folke/flash.nvim", 
       event = "VeryLazy",
-      -- stylua: ignore
       keys = {
         { "s",         mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
         { "<Leader>s", mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash treesitter" },
@@ -117,69 +77,64 @@ require("lazy").setup({
         { "r",         mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
         { "R",         mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
         { "<c-s>",     mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
-      },
+      }
     },
-    -- {
-    --   'phaazon/hop.nvim',
-    --   branch = 'v2', -- optional but strongly recommended
-    --   config = function()
-    --     require 'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
-    --   end,
-    --   name = 'hop'
-    -- },
-    { "tpope/vim-fugitive" },
-    -- Plugin to edit obsidian notes in nvim.
+
+    -- Markdown and Documentation
     {
       "epwalsh/obsidian.nvim",
       lazy = false,
       ft = "markdown",
-      dependencies = {
-        -- Required.
-        "nvim-lua/plenary.nvim",
-      },
+      dependencies = { "nvim-lua/plenary.nvim" },
       opts = {
         workspaces = {
-          {
-            name = "personal",
-            path = "~/vaults/personal",
-          },
-          {
-            name = "work",
-            path = "~/vaults/work",
-          },
-        },
-      },
-    },
-    {
-      "MysticalDevil/inlay-hints.nvim",
-      event = "LspAttach",
-      dependencies = { "neovim/nvim-lspconfig" },
-      config = function()
-        require("inlay-hints").setup()
-      end
-    },
-    {
-      'VonHeikemen/lsp-zero.nvim',
-      branch = 'v4.x',
-      dependencies = {
-        { "neovim/nvim-lspconfig" },
-        -- Autocompletion
-        { 'hrsh7th/nvim-cmp' },
-        { 'hrsh7th/cmp-buffer' },
-        { 'hrsh7th/cmp-path' },
-        { 'hrsh7th/cmp-nvim-lsp' },
-        { 'hrsh7th/cmp-nvim-lua' },
+          { name = "personal", path = "~/vaults/personal" },
+          { name = "work", path = "~/vaults/work" }
+        }
       }
     },
-    {
-      "nvim-neo-tree/neo-tree.nvim",
+
+    -- Experimental AI Features
+    { 'yetone/avante.nvim',
+      event = "VeryLazy",
+      version = false,
+      opts = {
+     --   provider = "ollama",
+        provider = "openai",
+        openai = {
+          endpoint = "https://api.openai.com/v1",
+          model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
+          timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+          temperature = 0,
+          max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
+          --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+        },
+        ollama = { model = "deepcoder:14b" }
+      },
+      build = "make",
+      dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+        "stevearc/dressing.nvim",
+        "nvim-lua/plenary.nvim",
+        "MunifTanjim/nui.nvim"
+      }
+    },
+
+    -- Additional Features
+    { 'mrcjkb/rustaceanvim', version = '^5' },
+    { 'theprimeagen/harpoon' },
+    { 'nvim-neo-tree/neo-tree.nvim',
       branch = "v3.x",
       dependencies = {
         "nvim-lua/plenary.nvim",
-        "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-        "MunifTanjim/nui.nvim",
-        -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+        "nvim-tree/nvim-web-devicons",
+        "MunifTanjim/nui.nvim"
       }
+    },
+    { 'MysticalDevil/inlay-hints.nvim',
+      event = "LspAttach",
+      dependencies = { "neovim/nvim-lspconfig" },
+      config = function() require("inlay-hints").setup() end
     }
   },
 })

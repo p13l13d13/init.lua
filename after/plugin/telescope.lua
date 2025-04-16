@@ -12,7 +12,3 @@ require("telescope").setup({
         },
     },
 })
-
-require('telekasten').setup({
-  home = vim.fn.expand("~/docs/zettelkasten"), -- Put the name of your notes directory here
-})
