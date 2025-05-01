@@ -82,3 +82,5 @@ load_configs()
 setup_theme()
 setup_rust_formatting()
 setup_neovide()
+
+require("oil").setup()
