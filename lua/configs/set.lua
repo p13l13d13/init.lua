@@ -1,68 +1,73 @@
+-- Neovim settings configuration
+-- This file contains all basic Neovim settings and options
+
+-- Leader key
 vim.g.mapleader = ","
 
-vim.opt.nu = true
+-- Line numbers and cursor
+vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.cursorline = true
+vim.opt.scrolloff = 8
+vim.opt.signcolumn = "yes"
 
+-- Indentation
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
+vim.opt.smartindent = true
+vim.opt.autoindent = true
 
+-- Search settings
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.isfname:append("@-@")
 
--- enable mouse mode
-vim.o.mouse = 'a'
+-- Text display
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
+vim.opt.showbreak = "↪ "
 
--- Wrap long lines at words.
-vim.o.linebreak = true
-
--- Folding.
-vim.o.foldcolumn = '1'
-vim.o.foldlevelstart = 99
+-- Folding
+vim.opt.foldcolumn = '1'
+vim.opt.foldlevelstart = 99
 vim.wo.foldtext = ''
 
--- Sync clipboard between the OS and Neovim.
-vim.o.clipboard = 'unnamedplus'
-
-vim.opt.smartindent = true
-
-vim.opt.wrap = true
-
--- Case insensitive searching UNLESS /C or the search has capitals.
-vim.o.ignorecase = true
-vim.o.smartcase = true
-
--- undo history and disable swap files
+-- File handling
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
+vim.opt.clipboard = 'unnamedplus'
 
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
-
+-- UI settings
 vim.opt.termguicolors = true
+vim.opt.background = "dark"
+vim.opt.mouse = 'a'
+vim.opt.updatetime = 150
 
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.isfname:append("@-@")
-
--- Update times and timeouts.
-vim.o.updatetime = 150
-
-vim.o.termguicolors = true
-vim.o.background = "dark" -- or "light" for light mode
-
--- Spell checking everywhere
+-- Spell checking
 vim.opt.spell = true
 vim.opt.spelllang = { 'en' }
 
+-- Diagnostic settings
+vim.diagnostic.config({
+  virtual_text = true,
+  virtual_lines = { only_current_line = true },
+  signs = true,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = false,
+})
+
+-- Spell toggle mapping
 vim.keymap.set('n', '<leader>sc', function()
   vim.opt.spell = not vim.opt.spell:get()
   print("Spell checking: " .. (vim.opt.spell:get() and "ON" or "OFF"))
 end, { desc = "Toggle Spell Checking" })
 
-vim.diagnostic.config({
-  virtual_text = true,
-  -- I use <leader>dl to toggle it, so they are disabled by default, because they're making such a mess
-  virtual_lines = { only_current_line = true }
-})
+vim.diagnostic.config({ virtual_lines = { current_line = true } })

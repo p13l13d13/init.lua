@@ -20,12 +20,13 @@ require("lazy").setup({
   },
   spec = {
     -- Core Neovim enhancements
-    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+    { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },
     { "nvim-treesitter/nvim-treesitter-textobjects" },
     { "nanotee/zoxide.vim" },
     { 'jvgrootveld/telescope-zoxide' },
     -- Language Support
-    { "ray-x/go.nvim",
+    {
+      "ray-x/go.nvim",
       dependencies = { "ray-x/guihua.lua", "neovim/nvim-lspconfig", "nvim-treesitter/nvim-treesitter" },
       config = function() require("go").setup() end,
       event = { "CmdlineEnter" },
@@ -56,19 +57,21 @@ require("lazy").setup({
 
     -- File Navigation and Search
     { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } },
-    { 'mrjones2014/legendary.nvim', requires = 'kkharji/sqlite.lua' },
-    { "numToStr/Comment.nvim", 
-      config = function() require('Comment').setup() end 
+    { 'mrjones2014/legendary.nvim',    requires = 'kkharji/sqlite.lua' },
+    {
+      "numToStr/Comment.nvim",
+      config = function() require('Comment').setup() end
     },
 
     -- UI Enhancements
     { 'stevearc/dressing.nvim' },
-    { 'akinsho/toggleterm.nvim', version = "*", config = true },
+    { 'akinsho/toggleterm.nvim',  version = "*",   config = true },
     { 'ellisonleao/gruvbox.nvim', name = 'gruvbox' },
 
     -- Code Navigation and Editing
-    { "kylechui/nvim-surround", version = "*", event = "VeryLazy" },
-    { "folke/flash.nvim", 
+    { "kylechui/nvim-surround",   version = "*",   event = "VeryLazy" },
+    {
+      "folke/flash.nvim",
       event = "VeryLazy",
       keys = {
         { "s",         mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
@@ -89,22 +92,34 @@ require("lazy").setup({
       opts = {
         workspaces = {
           { name = "personal", path = "~/vaults/personal" },
-          { name = "work", path = "~/vaults/work" }
+          { name = "work",     path = "~/vaults/work" }
         }
       }
     },
 
     -- Experimental AI Features
-    { 'yetone/avante.nvim',
+    {
+      "olimorris/codecompanion.nvim",
+      opts = {},
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
+      },
+    },
+    {
+      'yetone/avante.nvim',
       event = "VeryLazy",
       version = false,
       opts = {
-     --   provider = "ollama",
-        provider = "openai",
+        --   provider = "ollama",
+        provider = "gemini",
+        gemini = {
+          model = "gemini-2.5-pro-exp-03-25",
+        },
         openai = {
           endpoint = "https://api.openai.com/v1",
-          model = "gpt-4o", -- your desired model (or use gpt-4o, etc.)
-          timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
+          model = "gpt-4.1",            -- your desired model (or use gemini-2.5-pro, etc.)
+          timeout = 30000,              -- Timeout in milliseconds, increase this for reasoning models
           temperature = 0,
           max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
           --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
@@ -123,7 +138,8 @@ require("lazy").setup({
     -- Additional Features
     { 'mrcjkb/rustaceanvim', version = '^5' },
     { 'theprimeagen/harpoon' },
-    { 'nvim-neo-tree/neo-tree.nvim',
+    {
+      'nvim-neo-tree/neo-tree.nvim',
       branch = "v3.x",
       dependencies = {
         "nvim-lua/plenary.nvim",
@@ -131,7 +147,8 @@ require("lazy").setup({
         "MunifTanjim/nui.nvim"
       }
     },
-    { 'MysticalDevil/inlay-hints.nvim',
+    {
+      'MysticalDevil/inlay-hints.nvim',
       event = "LspAttach",
       dependencies = { "neovim/nvim-lspconfig" },
       config = function() require("inlay-hints").setup() end
