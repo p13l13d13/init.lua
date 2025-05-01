@@ -2,6 +2,27 @@
 local cmp = require('cmp')
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local lspkind = require('lspkind') -- For completion item icons
+local conform = require('conform') -- For formatting
+local fidget = require('fidget') -- For LSP progress notifications
+
+-- Setup fidget for LSP progress display
+fidget.setup({})
+
+-- Basic setup for conform (needs further configuration with formatters)
+conform.setup({
+  -- Define formatters by filetype, e.g.:
+  -- formatters_by_ft = {
+  --   lua = { "stylua" },
+  --   python = { "black" },
+  --   javascript = { "prettierd", "eslint_d" },
+  -- },
+  -- Optional: Configure format on save
+  -- format_on_save = {
+  --   timeout_ms = 500,
+  --   lsp_fallback = true, -- Fallback to LSP formatting if conform fails
+  -- },
+})
 
 -- nvim-cmp setup
 cmp.setup({
@@ -30,14 +51,21 @@ cmp.setup({
     ['<C-e>'] = cmp.mapping.abort(),
     ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Confirm selection: Accept currently selected item
   }),
+  -- Configure completion sources
   sources = cmp.config.sources({
-      { name = 'nvim_lsp', keyword_length = 1 }, -- Trigger LSP completion earlier
-      { name = 'nvim_lua', keyword_length = 2 },
-      { name = 'path' },
-    },
-    {
-      { name = 'buffer', keyword_length = 3 }, -- Source for buffer words
-    }),
+    { name = 'nvim_lsp', keyword_length = 1 }, -- LSP suggestions
+    { name = 'nvim_lua', keyword_length = 2 }, -- Lua suggestions (for Neovim config)
+    { name = 'buffer', keyword_length = 3 },   -- Suggestions from words in the current buffer
+    { name = 'path' },                         -- File path suggestions
+  }),
+  -- Add icons to completion menu using lspkind
+  formatting = {
+    format = lspkind.cmp_format({
+      mode = 'symbol_text', -- Show symbol and text
+      maxwidth = 50, -- Prevent overly long completion items
+      ellipsis_char = '...', -- Character to use when truncating
+    })
+  },
 })
 
 -- Base LSP keymaps to apply to all servers on attach
@@ -54,9 +82,11 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, opts)
   vim.keymap.set('n', '<F2>', vim.lsp.buf.rename, opts)
-  -- Use vim.lsp.buf.format which handles async/sync formatting based on server capabilities.
+  -- Use conform.nvim for formatting
   -- Apply to normal ('n') and visual ('v') modes.
-  vim.keymap.set({ 'n', 'v' }, '<F3>', vim.lsp.buf.format, opts)
+  vim.keymap.set({ 'n', 'v' }, '<F3>', function()
+    conform.format({ async = true, lsp_fallback = true })
+  end, opts)
   vim.keymap.set('n', '<F4>', vim.lsp.buf.code_action, opts)
 
   -- Optional: Add common diagnostic mappings (uncomment if desired)
@@ -75,29 +105,31 @@ local on_attach = function(client, bufnr)
     severity_sort = true,
   })
 
-  local sign = function(opts)
-    vim.fn.sign_define(opts.name, {
-      texthl = opts.name,
-      text = opts.text,
-      numhl = ''
-    })
+  -- Define custom diagnostic signs using icons
+  -- Using vim.fn.sign_define directly allows for custom icons.
+  -- The alternative vim.diagnostic.config({ signs = ... }) is simpler for text-based signs.
+  local signs = {
+    Error = "", -- Error icon
+    Warn  = "", -- Warning icon
+    Hint  = "", -- Hint icon
+    Info  = ""  -- Info icon
+  }
+  for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    -- Define the sign with the icon and highlight group
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
   end
-
-  sign({ name = 'DiagnosticSignError', text = '' })
-  sign({ name = 'DiagnosticSignWarn', text = '' })
-  sign({ name = 'DiagnosticSignHint', text = '' })
-  sign({ name = 'DiagnosticSignInfo', text = '' })
 end
 
 -- LSP Server configurations
 -- List of servers to set up with default settings + common on_attach and capabilities
 local servers = {
-  'bashls',
-  'clangd',
-  'gopls',
-  'nil_ls',
-  'pyright',
-  'ts_ls',
+  'bashls',   -- Bash Language Server
+  'clangd',   -- C/C++ Language Server
+  'gopls',    -- Go Language Server
+  'nil_ls',   -- Nix Language Server
+  'pyright',  -- Python Language Server
+  'ts_ls', -- Standard server for TypeScript/JavaScript
   -- Note: rust_analyzer was commented out in the original file and remains excluded.
   -- If you want to add it back, ensure rust-analyzer is installed and uncomment:
   -- 'rust_analyzer',
@@ -115,12 +147,8 @@ lspconfig.eslint.setup {
   on_attach = function(client, bufnr)
     -- Apply base keymaps first
     on_attach(client, bufnr)
-    -- Enable EslintFixAll command on save for this buffer
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      buffer = bufnr,
-      command = "EslintFixAll",
-      desc = "Run EslintFixAll on save",
-    })
+    -- Formatting is now handled by conform.nvim, so the EslintFixAll autocmd is removed.
+    -- If you want format-on-save, configure it within conform.setup().
   end,
   capabilities = capabilities,
 }

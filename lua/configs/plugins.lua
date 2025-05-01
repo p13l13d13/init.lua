@@ -44,9 +44,12 @@ require("lazy").setup({
         { 'hrsh7th/cmp-buffer' },
         { 'hrsh7th/cmp-path' },
         { 'hrsh7th/cmp-nvim-lsp' },
-        { 'hrsh7th/cmp-nvim-lua' }
+        { 'hrsh7th/cmp-nvim-lua' },
+        { 'onsails/lspkind.nvim' } -- Icons for completion
       }
     },
+    { 'stevearc/conform.nvim', opts = {} }, -- Formatting
+    { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} }, -- LSP progress UI
 
     -- Git and Version Control
     {
