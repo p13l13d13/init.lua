@@ -15,10 +15,10 @@ end
 local function load_configs()
   -- Load basic settings
   safe_require("configs.set")
-  
+
   -- Load key mappings
   safe_require("configs.remap")
-  
+
   -- Load plugins
   safe_require("configs.plugins")
 end
@@ -72,7 +72,6 @@ local function setup_neovide()
   if vim.g.neovide then
     vim.o.guifont = "Hack:h13"
     vim.g.neovide_confirm_quit = true
-    vim.g.neovide_cursor_vfx_mode = "sonicboom"
     vim.g.neovide_cursor_animation_length = 0.07
   end
 end
@@ -84,3 +83,10 @@ setup_rust_formatting()
 setup_neovide()
 
 require("oil").setup()
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "ToggleMyPrompt",
+  callback = function() require("avante.config").override({ system_prompt = "MY CUSTOM SYSTEM PROMPT" }) end,
+})
+vim.keymap.set("n", "<leader>am", function() vim.api.nvim_exec_autocmds("User", { pattern = "ToggleMyPrompt" }) end,
+  { desc = "avante: toggle my prompt" })

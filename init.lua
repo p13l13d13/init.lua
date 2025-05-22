@@ -1,5 +1,5 @@
 -- Neovim initialization file
--- This file handles the basic initialization of the Neovim configuration
+-- This file handles the basic initialization of the Neovim configurationinit.lua
 -- It includes special handling for FireNvim and error checking
 
 -- Check if running in FireNvim context

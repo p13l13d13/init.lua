@@ -20,17 +20,24 @@ require("lazy").setup({
   },
   spec = {
     {
-  'stevearc/oil.nvim',
-  ---@module 'oil'
-  ---@type oil.SetupOpts
-  opts = {},
-  -- Optional dependencies
-  dependencies = { { "echasnovski/mini.icons", opts = {} } },
-  -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-  -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-  lazy = false,
-},
+      "m4xshen/hardtime.nvim",
+      lazy = false,
+      dependencies = { "MunifTanjim/nui.nvim" },
+      opts = {},
+    },
+    {
+      'stevearc/oil.nvim',
+      ---@module 'oil'
+      ---@type oil.SetupOpts
+      opts = {},
+      -- Optional dependencies
+      dependencies = { { "echasnovski/mini.icons", opts = {} } },
+      -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+      -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+      lazy = false,
+    },
     -- Core Neovim enhancements
+    { 'tpope/vim-sleuth' },
     { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },
     { "nvim-treesitter/nvim-treesitter-textobjects" },
     { "nanotee/zoxide.vim" },
@@ -59,8 +66,8 @@ require("lazy").setup({
         { 'onsails/lspkind.nvim' } -- Icons for completion
       }
     },
-    { 'stevearc/conform.nvim', opts = {} }, -- Formatting
-    { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} }, -- LSP progress UI
+    { 'stevearc/conform.nvim', opts = {} },                 -- Formatting
+    { 'j-hui/fidget.nvim',     tag = 'legacy', opts = {} }, -- LSP progress UI
 
     -- Git and Version Control
     {
@@ -130,15 +137,20 @@ require("lazy").setup({
         gemini = {
           model = "gemini-2.5-pro-exp-03-25",
         },
+        cursor_applying_provider = 'gemini', -- In this example, use Groq for applying, but you can also use any provider you want.
+        behaviour = {
+          --- ... existing behaviours
+          enable_cursor_planning_mode = true, -- enable cursor planning mode!
+        },
         openai = {
           endpoint = "https://api.openai.com/v1",
-          model = "gpt-4.1",            -- your desired model (or use gemini-2.5-pro, etc.)
-          timeout = 30000,              -- Timeout in milliseconds, increase this for reasoning models
+          model = "o4-mini",             -- your desired model (or use gemini-2.5-pro, etc.)
+          timeout = 30000,               -- Timeout in milliseconds, increase this for reasoning models
           temperature = 0,
-          max_completion_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
-          --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+          max_completion_tokens = 31000, -- Increase this to include reasoning tokens (for reasoning models)
+          reasoning_effort = "medium",   -- low|medium|high, only used for reasoning models
         },
-        ollama = { model = "deepcoder:14b" }
+        ollama = { model = "qwen3:8b" }
       },
       build = "make",
       dependencies = {

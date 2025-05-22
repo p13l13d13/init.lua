@@ -3,6 +3,9 @@
 
 -- Leader key
 vim.g.mapleader = ","
+vim.g.maplocalleader = ","
+
+vim.g.have_nerd_font = true
 
 -- Line numbers and cursor
 vim.opt.number = true
@@ -10,6 +13,7 @@ vim.opt.relativenumber = true
 vim.opt.cursorline = true
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
+vim.opt.showmode = false
 
 -- Indentation
 vim.opt.tabstop = 2
@@ -18,6 +22,15 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.autoindent = true
+
+-- Configure how new splits should be opened
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
+-- Preview substitutions live, as you type!
+vim.opt.inccommand = 'split'
+
+vim.opt.confirm = true
 
 -- Search settings
 vim.opt.hlsearch = false
@@ -63,6 +76,9 @@ vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = false,
 })
+
+-- https://github.com/epwalsh/obsidian.nvim/issues/286
+vim.opt_local.conceallevel = 2
 
 -- Spell toggle mapping
 vim.keymap.set('n', '<leader>sc', function()

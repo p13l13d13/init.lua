@@ -11,30 +11,38 @@ fidget.setup({})
 
 -- Basic setup for conform (needs further configuration with formatters)
 conform.setup({
-  -- Define formatters by filetype, e.g.:
-  -- formatters_by_ft = {
-  --   lua = { "stylua" },
-  --   python = { "black" },
-  --   javascript = { "prettierd", "eslint_d" },
-  -- },
+  -- Define formatters by filetype
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "black", "isort" }, -- Added isort for Python imports
+    javascript = { { "prettierd", "eslint_d" }, "prettier" }, -- Added prettier fallback
+    typescript = { { "prettierd", "eslint_d" }, "prettier" }, -- Added TypeScript
+    css = { "prettier" },
+    html = { "prettier" },
+    json = { "prettier" },
+    markdown = { "prettier" },
+    yaml = { "prettier" },
+    rust = { "rustfmt" }, -- Added rustfmt for Rust
+  },
   -- Optional: Configure format on save
-  -- format_on_save = {
-  --   timeout_ms = 500,
-  --   lsp_fallback = true, -- Fallback to LSP formatting if conform fails
-  -- },
+  -- This will format the buffer on FileWritePost.
+  -- You can add more events to trigger formatting.
+  -- E.g., {"BufWritePost", "BufEnter"}
+  format_on_save = {
+    timeout_ms = 500,
+    lsp_fallback = true, -- Fallback to LSP formatting if conform fails
+  },
 })
 
 -- nvim-cmp setup
 cmp.setup({
   snippet = {
-    -- REQUIRED - you must specify a snippet engine
+    -- REQUIRED - Specify a snippet engine.
+    -- luasnip is recommended and widely used.
+    -- Ensure luasnip and a collection like friendly-snippets are installed.
     expand = function(args)
-      -- Using vim.snippet for Neovim 0.10+
-      -- Replace with your snippet engine's expand function if different
-      -- Example for luasnip: require('luasnip').lsp_expand(args.body)
-      -- Example for vsnip (if you still use it): vim.fn["vsnip#anonymous"](args.body)
-      -- Ensure your snippet plugin (like friendly-snippets) is loaded if needed.
-      vim.snippet.expand(args.body)
+      -- Use luasnip to expand snippets
+      require('luasnip').lsp_expand(args.body)
     end,
   },
   window = {

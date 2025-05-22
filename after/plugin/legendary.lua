@@ -5,6 +5,7 @@ local ui = require("harpoon.ui")
 vim.keymap.set("n", "<leader>a", mark.add_file)
 vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
 
+
 require('legendary').setup({
   extensions = { lazy_nvim = true },
   keymaps = {
@@ -36,6 +37,16 @@ require('legendary').setup({
       '<leader>fr',
       builtin.resume,
       description = 'telescope open last picker',
+    },
+    {
+      '<leader>/',
+      function()
+        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+          winblend = 10,
+          previewer = false,
+        })
+      end,
+      description = 'fuzzy find in the current buffer',
     },
     {
       '<leader>ff',
