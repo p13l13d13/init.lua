@@ -20,12 +20,6 @@ require("lazy").setup({
   },
   spec = {
     {
-      "m4xshen/hardtime.nvim",
-      lazy = false,
-      dependencies = { "MunifTanjim/nui.nvim" },
-      opts = {},
-    },
-    {
       'stevearc/oil.nvim',
       ---@module 'oil'
       ---@type oil.SetupOpts
@@ -36,6 +30,7 @@ require("lazy").setup({
       -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
       lazy = false,
     },
+    { 'glacambre/firenvim', build = ":call firenvim#install(1)" , lazy = false},
     -- Core Neovim enhancements
     { 'tpope/vim-sleuth' },
     { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },

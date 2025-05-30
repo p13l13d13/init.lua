@@ -1,22 +1,19 @@
--- Neovim initialization file
--- This file handles the basic initialization of the Neovim configurationinit.lua
--- It includes special handling for FireNvim and error checking
+require("configs")
 
--- Check if running in FireNvim context
-local is_firenvim = vim.g.started_by_firenvim == true
-
--- Initialize configuration based on context
-if is_firenvim then
-  -- FireNvim specific initialization
-  -- This prevents loading unnecessary plugins and configurations
-  -- when running in a browser context
-  vim.opt.laststatus = 0  -- Hide status line in FireNvim
-  vim.opt.showtabline = 0 -- Hide tab line in FireNvim
+if vim.g.started_by_firenvim == true then
+  vim.g.firenvim_config = {
+    globalSettings = { alt = "all" },
+    localSettings = {
+        [".*"] = {
+            cmdline  = "neovim",
+            content  = "text",
+            priority = 0,
+            selector = "textarea",
+            takeover = "never"
+        }
+    }
+  }
+  vim.o.laststatus = 0
 else
-  -- Regular Neovim initialization
-  local status_ok, configs = pcall(require, "configs")
-  if not status_ok then
-    vim.notify("Failed to load configs: " .. tostring(configs), vim.log.levels.ERROR)
-    return
-  end
+  vim.o.laststatus = 2
 end

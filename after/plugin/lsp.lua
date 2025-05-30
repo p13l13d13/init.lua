@@ -4,7 +4,7 @@ local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local lspkind = require('lspkind') -- For completion item icons
 local conform = require('conform') -- For formatting
-local fidget = require('fidget') -- For LSP progress notifications
+local fidget = require('fidget')   -- For LSP progress notifications
 
 -- Setup fidget for LSP progress display
 fidget.setup({})
@@ -14,7 +14,7 @@ conform.setup({
   -- Define formatters by filetype
   formatters_by_ft = {
     lua = { "stylua" },
-    python = { "black", "isort" }, -- Added isort for Python imports
+    python = { "black", "isort" },                            -- Added isort for Python imports
     javascript = { { "prettierd", "eslint_d" }, "prettier" }, -- Added prettier fallback
     typescript = { { "prettierd", "eslint_d" }, "prettier" }, -- Added TypeScript
     css = { "prettier" },
@@ -28,10 +28,6 @@ conform.setup({
   -- This will format the buffer on FileWritePost.
   -- You can add more events to trigger formatting.
   -- E.g., {"BufWritePost", "BufEnter"}
-  format_on_save = {
-    timeout_ms = 500,
-    lsp_fallback = true, -- Fallback to LSP formatting if conform fails
-  },
 })
 
 -- nvim-cmp setup
@@ -63,14 +59,14 @@ cmp.setup({
   sources = cmp.config.sources({
     { name = 'nvim_lsp', keyword_length = 1 }, -- LSP suggestions
     { name = 'nvim_lua', keyword_length = 2 }, -- Lua suggestions (for Neovim config)
-    { name = 'buffer', keyword_length = 3 },   -- Suggestions from words in the current buffer
+    { name = 'buffer',   keyword_length = 3 }, -- Suggestions from words in the current buffer
     { name = 'path' },                         -- File path suggestions
   }),
   -- Add icons to completion menu using lspkind
   formatting = {
     format = lspkind.cmp_format({
-      mode = 'symbol_text', -- Show symbol and text
-      maxwidth = 50, -- Prevent overly long completion items
+      mode = 'symbol_text',  -- Show symbol and text
+      maxwidth = 50,         -- Prevent overly long completion items
       ellipsis_char = '...', -- Character to use when truncating
     })
   },
@@ -120,7 +116,7 @@ local on_attach = function(client, bufnr)
     Error = "", -- Error icon
     Warn  = "", -- Warning icon
     Hint  = "", -- Hint icon
-    Info  = ""  -- Info icon
+    Info  = "" -- Info icon
   }
   for type, icon in pairs(signs) do
     local hl = "DiagnosticSign" .. type
@@ -132,12 +128,13 @@ end
 -- LSP Server configurations
 -- List of servers to set up with default settings + common on_attach and capabilities
 local servers = {
-  'bashls',   -- Bash Language Server
-  'clangd',   -- C/C++ Language Server
-  'gopls',    -- Go Language Server
-  'nil_ls',   -- Nix Language Server
-  'pyright',  -- Python Language Server
-  'ts_ls', -- Standard server for TypeScript/JavaScript
+  'bashls',  -- Bash Language Server
+  'clangd',  -- C/C++ Language Server
+  'gopls',   -- Go Language Server
+  'nil_ls',  -- Nix Language Server
+  'pyright', -- Python Language Server
+  'ts_ls',   -- Standard server for TypeScript/JavaScript
+  'qmlls'
   -- Note: rust_analyzer was commented out in the original file and remains excluded.
   -- If you want to add it back, ensure rust-analyzer is installed and uncomment:
   -- 'rust_analyzer',
