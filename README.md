@@ -1,24 +1,21 @@
-# My NVIM Configuration
+# Summary
 
-A modern Neovim configuration focused on productivity and developer experience.
+I use this as my daily driver for work and everything else. The FULL setup that I use is actually neovide + nvim + firenvim (with firefox).
 
 ## Requirements
 
 - Neovim 0.10 or higher
-- Git
-- A terminal with true color support
-- Basic Unix tools (curl, tar, etc.)
+- git, curl, make
+- Modern terminal (I use alacritty)
 
 ## Installation
 
-1. Clone this repository:
-   ```bash
-   git clone <your-repo-url> ~/.config/nvim
+1. Clone this repository.
    ```
 
 2. Run the link script to set up the configuration:
    ```bash
-   ./link.sh
+   ./install.sh
    ```
 
 3. Start Neovim and install plugins:
@@ -31,28 +28,19 @@ A modern Neovim configuration focused on productivity and developer experience.
 
 - Plugin management with Lazy.nvim
 - Keybindings management with Legendary
-- Modern UI with various visual enhancements
-- Language server support
-- Git integration
-- File navigation and management
-- Terminal integration
+- File navigation with Oil.nvim (to modify filesystem as text)
+* Firenvim, so a man can have full scale neovim instance right in a browser
+* Some modern AI integrations (of course with an agent mode)
+* Heavy usage of label-highlighted jumping
 
 ## Key Commands
 
 - `:Lazy` - Manage plugins
 - `:Legendary` - View and search keybindings
 - `:LspInfo` - Check LSP status
-- `:Mason` - Manage LSP servers and tools
 
 ## Configuration
 
 The configuration is split into several modules:
 - `lua/` - Core configuration and plugin setups
 - `after/` - Overrides and additional configurations
-
-## Troubleshooting
-
-If you encounter any issues:
-1. Make sure you have the required Neovim version
-2. Run `:Lazy sync` to ensure all plugins are properly installed
-3. Check the Neovim logs with `:messages`
