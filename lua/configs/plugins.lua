@@ -10,6 +10,7 @@ if not vim.loop.fs_stat(lazypath) then
     lazypath,
   })
 end
+
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
@@ -19,6 +20,30 @@ require("lazy").setup({
     frequency = 604800, -- Check for updates every week (in seconds)
   },
   spec = {
+    "karb94/neoscroll.nvim",
+    {
+      'neovim/nvim-lspconfig',
+      dependencies = { 'saghen/blink.cmp' },
+
+      opts = {
+        servers = {
+          lua_ls = {},
+          basedpyright = {},
+          ruff = {},
+          bashls = {},
+          clangd = {},
+          dockerls = {},
+          fish_lsp = {}
+        }
+      },
+      config = function(_, opts)
+        local lspconfig = require('lspconfig')
+        for server, config in pairs(opts.servers) do
+          config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
+          lspconfig[server].setup(config)
+        end
+      end
+    },
     {
       'stevearc/oil.nvim',
       ---@module 'oil'
@@ -30,7 +55,7 @@ require("lazy").setup({
       -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
       lazy = false,
     },
-    { 'glacambre/firenvim', build = ":call firenvim#install(1)" , lazy = false},
+    { 'glacambre/firenvim',                         build = ":call firenvim#install(1)", lazy = false },
     -- Core Neovim enhancements
     { 'tpope/vim-sleuth' },
     { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },
@@ -61,8 +86,8 @@ require("lazy").setup({
         { 'onsails/lspkind.nvim' } -- Icons for completion
       }
     },
-    { 'stevearc/conform.nvim', opts = {} },                 -- Formatting
-    { 'j-hui/fidget.nvim',     tag = 'legacy', opts = {} }, -- LSP progress UI
+    { 'stevearc/conform.nvim' },                           -- Formatting
+    { 'j-hui/fidget.nvim',    tag = 'legacy', opts = {} }, -- LSP progress UI
 
     -- Git and Version Control
     {
@@ -129,23 +154,23 @@ require("lazy").setup({
       opts = {
         --   provider = "ollama",
         provider = "gemini",
-        gemini = {
-          model = "gemini-2.5-pro-exp-03-25",
-        },
         cursor_applying_provider = 'gemini', -- In this example, use Groq for applying, but you can also use any provider you want.
         behaviour = {
           --- ... existing behaviours
           enable_cursor_planning_mode = true, -- enable cursor planning mode!
         },
-        openai = {
-          endpoint = "https://api.openai.com/v1",
-          model = "o4-mini",             -- your desired model (or use gemini-2.5-pro, etc.)
-          timeout = 30000,               -- Timeout in milliseconds, increase this for reasoning models
-          temperature = 0,
-          max_completion_tokens = 31000, -- Increase this to include reasoning tokens (for reasoning models)
-          reasoning_effort = "medium",   -- low|medium|high, only used for reasoning models
-        },
-        ollama = { model = "qwen3:8b" }
+        providers = {
+          openai = {
+            endpoint = "https://api.openai.com/v1",
+            model = "o4-mini", -- your desired model (or use gemini-2.5-pro, etc.)
+            timeout = 30000,   -- Timeout in milliseconds, increase this for reasoning models
+          },
+          ollama = { model = "qwen3:8b" },
+          gemini = {
+            model = "gemini-2.5-pro-exp-03-25",
+          },
+
+        }
       },
       build = "make",
       dependencies = {

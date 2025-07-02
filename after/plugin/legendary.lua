@@ -21,7 +21,7 @@ require('legendary').setup({
     },
     {
       '<leader>bf',
-      { n = vim.lsp.buf.format },
+      '<Cmd>Format<CR>',
       description = 'format current buffer',
     },
 
