@@ -22,6 +22,25 @@ require("lazy").setup({
   spec = {
     "karb94/neoscroll.nvim",
     {
+      'saghen/blink.cmp',
+      version = '1.*',
+      opts = {
+        keymap = { preset = 'default' },
+        signature = { enabled = true },
+        completion = {
+          -- By default, you may press `<c-space>` to show the documentation.
+          -- Optionally, set `auto_show = true` to show the documentation after a delay.
+          documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        },
+        sources = {
+          default = { 'lsp', 'path', 'snippets' },
+          providers = {
+            lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
+          },
+        }
+      }
+    },
+    {
       'neovim/nvim-lspconfig',
       dependencies = { 'saghen/blink.cmp' },
 
@@ -34,7 +53,7 @@ require("lazy").setup({
           clangd = {},
           dockerls = {},
           fish_lsp = {}
-        }
+        },
       },
       config = function(_, opts)
         local lspconfig = require('lspconfig')
