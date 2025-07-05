@@ -10,6 +10,15 @@ require('legendary').setup({
   extensions = { lazy_nvim = true },
   keymaps = {
     {
+      '<leader>sc',
+      {
+      n = function()
+        vim.opt.spell = not vim.opt.spell:get(),
+        print("Spell checking: " .. (vim.opt.spell:get() and "ON" or "OFF"))
+      end },
+      description = 'toggle spell check'
+    },
+    {
       '<leader>a',
       { n = mark.add_file },
       description = 'harpoon: add file',

@@ -34,9 +34,6 @@ require("lazy").setup({
         },
         sources = {
           default = { 'lsp', 'path', 'snippets' },
-          providers = {
-            lazydev = { module = 'lazydev.integrations.blink', score_offset = 100 },
-          },
         }
       }
     },
@@ -52,7 +49,8 @@ require("lazy").setup({
           bashls = {},
           clangd = {},
           dockerls = {},
-          fish_lsp = {}
+          fish_lsp = {},
+          zls = {}
         },
       },
       config = function(_, opts)
@@ -65,12 +63,8 @@ require("lazy").setup({
     },
     {
       'stevearc/oil.nvim',
-      ---@module 'oil'
-      ---@type oil.SetupOpts
       opts = {},
-      -- Optional dependencies
       dependencies = { { "echasnovski/mini.icons", opts = {} } },
-      -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
       -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
       lazy = false,
     },
@@ -90,21 +84,6 @@ require("lazy").setup({
       ft = { "go", 'gomod' },
       build = ':lua require("go.install").update_all_sync()'
     },
-
-    -- LSP and Completion
-    {
-      'VonHeikemen/lsp-zero.nvim',
-      branch = 'v4.x',
-      dependencies = {
-        { "neovim/nvim-lspconfig" },
-        { 'hrsh7th/nvim-cmp' },
-        { 'hrsh7th/cmp-buffer' },
-        { 'hrsh7th/cmp-path' },
-        { 'hrsh7th/cmp-nvim-lsp' },
-        { 'hrsh7th/cmp-nvim-lua' },
-        { 'onsails/lspkind.nvim' } -- Icons for completion
-      }
-    },
     { 'stevearc/conform.nvim' },                           -- Formatting
     { 'j-hui/fidget.nvim',    tag = 'legacy', opts = {} }, -- LSP progress UI
 
@@ -116,20 +95,41 @@ require("lazy").setup({
     { "tpope/vim-fugitive" },
 
     -- File Navigation and Search
-    { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } },
-    { 'mrjones2014/legendary.nvim',    requires = 'kkharji/sqlite.lua' },
+    {
+      'nvim-telescope/telescope.nvim',
+      event = 'VimEnter',
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        { -- If encountering errors, see telescope-fzf-native README for installation instructions
+          'nvim-telescope/telescope-fzf-native.nvim',
+
+          -- `build` is used to run some command when the plugin is installed/updated.
+          -- This is only run then, not every time Neovim starts up.
+          build = 'make',
+
+          -- `cond` is a condition used to determine whether this plugin should be
+          -- installed and loaded.
+          cond = function()
+            return vim.fn.executable 'make' == 1
+          end,
+        },
+        { 'nvim-telescope/telescope-ui-select.nvim' },
+      },
+    },
+    { 'mrjones2014/legendary.nvim', requires = 'kkharji/sqlite.lua' },
     {
       "numToStr/Comment.nvim",
       config = function() require('Comment').setup() end
     },
 
     -- UI Enhancements
+    { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
     { 'stevearc/dressing.nvim' },
-    { 'akinsho/toggleterm.nvim',  version = "*",   config = true },
+    { 'akinsho/toggleterm.nvim',  version = "*",      config = true },
     { 'ellisonleao/gruvbox.nvim', name = 'gruvbox' },
 
     -- Code Navigation and Editing
-    { "kylechui/nvim-surround",   version = "*",   event = "VeryLazy" },
+    { "kylechui/nvim-surround",   version = "*",      event = "VeryLazy" },
     {
       "folke/flash.nvim",
       event = "VeryLazy",
@@ -172,8 +172,8 @@ require("lazy").setup({
       version = false,
       opts = {
         --   provider = "ollama",
-        provider = "gemini",
-        cursor_applying_provider = 'gemini', -- In this example, use Groq for applying, but you can also use any provider you want.
+        provider = "openai",
+        cursor_applying_provider = 'openai', -- In this example, use Groq for applying, but you can also use any provider you want.
         behaviour = {
           --- ... existing behaviours
           enable_cursor_planning_mode = true, -- enable cursor planning mode!
@@ -185,11 +185,8 @@ require("lazy").setup({
             timeout = 30000,   -- Timeout in milliseconds, increase this for reasoning models
           },
           ollama = { model = "qwen3:8b" },
-          gemini = {
-            model = "gemini-2.5-pro-exp-03-25",
-          },
-
-        }
+        },
+        hints = { enabled = false }
       },
       build = "make",
       dependencies = {
@@ -203,15 +200,6 @@ require("lazy").setup({
     -- Additional Features
     { 'mrcjkb/rustaceanvim', version = '^5' },
     { 'theprimeagen/harpoon' },
-    {
-      'nvim-neo-tree/neo-tree.nvim',
-      branch = "v3.x",
-      dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-tree/nvim-web-devicons",
-        "MunifTanjim/nui.nvim"
-      }
-    },
     {
       'MysticalDevil/inlay-hints.nvim',
       event = "LspAttach",

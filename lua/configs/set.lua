@@ -55,7 +55,10 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
-vim.opt.clipboard = 'unnamedplus'
+
+vim.schedule(function()
+  vim.o.clipboard = 'unnamedplus'
+end)
 
 -- UI settings
 vim.opt.termguicolors = true
@@ -67,23 +70,41 @@ vim.opt.updatetime = 150
 vim.opt.spell = true
 vim.opt.spelllang = { 'en' }
 
--- Diagnostic settings
-vim.diagnostic.config({
-  virtual_text = true,
-  virtual_lines = { only_current_line = true },
-  signs = true,
-  underline = true,
-  update_in_insert = false,
-  severity_sort = false,
-})
-
 -- https://github.com/epwalsh/obsidian.nvim/issues/286
 vim.opt_local.conceallevel = 2
 
--- Spell toggle mapping
-vim.keymap.set('n', '<leader>sc', function()
-  vim.opt.spell = not vim.opt.spell:get()
-  print("Spell checking: " .. (vim.opt.spell:get() and "ON" or "OFF"))
-end, { desc = "Toggle Spell Checking" })
+vim.diagnostic.config {
+  virtual_lines = true,
+  severity_sort = true,
+  float = { border = 'rounded', source = 'if_many' },
+  underline = { severity = vim.diagnostic.severity.ERROR },
+  signs = vim.g.have_nerd_font and {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '󰅚 ',
+      [vim.diagnostic.severity.WARN] = '󰀪 ',
+      [vim.diagnostic.severity.INFO] = '󰋽 ',
+      [vim.diagnostic.severity.HINT] = '󰌶 ',
+    },
+  } or {},
+  virtual_text = {
+    source = 'if_many',
+    spacing = 2,
+    format = function(diagnostic)
+      local diagnostic_message = {
+        [vim.diagnostic.severity.ERROR] = diagnostic.message,
+        [vim.diagnostic.severity.WARN] = diagnostic.message,
+        [vim.diagnostic.severity.INFO] = diagnostic.message,
+        [vim.diagnostic.severity.HINT] = diagnostic.message,
+      }
+      return diagnostic_message[diagnostic.severity]
+    end,
+  },
+}
 
-vim.diagnostic.config({ virtual_lines = { current_line = true } })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  callback = function()
+    vim.hl.on_yank()
+  end,
+})

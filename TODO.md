@@ -1,6 +1,6 @@
 [ ] add more things to legendary/mappings
-[ ] remove annoying hint from avante
-[ ] code cleanup
-[ ] code removing
-[ ] spell checking doesn't work again...
+[ ] comment code
+[ ] update README.md
+[ ] add screenshots to README.md
+[ ] spell checking in git commit?
 [ ] disable some options (like LSP highlighting, etc.) when loading from firenvim
