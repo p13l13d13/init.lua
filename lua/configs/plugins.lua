@@ -20,12 +20,20 @@ require("lazy").setup({
     frequency = 604800, -- Check for updates every week (in seconds)
   },
   spec = {
+    { 'kevinhwang91/nvim-ufo',                      dependencies = 'kevinhwang91/promise-async' },
     "karb94/neoscroll.nvim",
+    {
+      'szymonwilczek/vim-be-better',
+      config = function()
+        -- Optional: Enable logging for debugging
+        vim.g.vim_be_better_log_file = 1
+      end
+    },
     {
       'saghen/blink.cmp',
       version = '1.*',
       opts = {
-        keymap = { preset = 'default' },
+        keymap = { preset = 'default', ["<Return>"] = { 'accept', 'fallback' } },
         signature = { enabled = true },
         completion = {
           -- By default, you may press `<c-space>` to show the documentation.
@@ -68,7 +76,7 @@ require("lazy").setup({
       -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
       lazy = false,
     },
-    { 'glacambre/firenvim',                         build = ":call firenvim#install(1)", lazy = false },
+    { 'glacambre/firenvim',                         build = ":call firenvim#install(1)",        lazy = false },
     -- Core Neovim enhancements
     { 'tpope/vim-sleuth' },
     { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },

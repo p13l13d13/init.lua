@@ -49,6 +49,7 @@ vim.opt.showbreak = "↪ "
 vim.opt.foldcolumn = '1'
 vim.opt.foldlevelstart = 99
 vim.wo.foldtext = ''
+vim.o.foldenable = true
 
 -- File handling
 vim.opt.swapfile = false
@@ -74,7 +75,7 @@ vim.opt.spelllang = { 'en' }
 vim.opt_local.conceallevel = 2
 
 vim.diagnostic.config {
-  virtual_lines = true,
+  virtual_lines = false,
   severity_sort = true,
   float = { border = 'rounded', source = 'if_many' },
   underline = { severity = vim.diagnostic.severity.ERROR },
@@ -108,3 +109,4 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.hl.on_yank()
   end,
 })
+
