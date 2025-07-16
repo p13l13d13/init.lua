@@ -13,6 +13,11 @@ end
 
 vim.opt.rtp:prepend(lazypath)
 
+local function lsp_on_attach(client, bufnr)
+  -- Use this function for buffer-local customizations (e.g., formatting on save, inlay hints, etc.)
+  -- Keymaps are managed by Legendary and should not be duplicated here.
+end
+
 require("lazy").setup({
   lockfile = "~/.lazy-lockzz.json",
   checker = {
@@ -65,6 +70,7 @@ require("lazy").setup({
         local lspconfig = require('lspconfig')
         for server, config in pairs(opts.servers) do
           config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
+          config.on_attach = lsp_on_attach
           lspconfig[server].setup(config)
         end
       end
@@ -81,7 +87,7 @@ require("lazy").setup({
     { 'tpope/vim-sleuth' },
     { 'nvim-treesitter/nvim-treesitter',            build = ':TSUpdate' },
     { "nvim-treesitter/nvim-treesitter-textobjects" },
-    { "nanotee/zoxide.vim" },
+    { 'nanotee/zoxide.vim' },
     { 'jvgrootveld/telescope-zoxide' },
     -- Language Support
     {
@@ -108,21 +114,31 @@ require("lazy").setup({
       event = 'VimEnter',
       dependencies = {
         'nvim-lua/plenary.nvim',
-        { -- If encountering errors, see telescope-fzf-native README for installation instructions
+        {
           'nvim-telescope/telescope-fzf-native.nvim',
-
-          -- `build` is used to run some command when the plugin is installed/updated.
-          -- This is only run then, not every time Neovim starts up.
           build = 'make',
-
-          -- `cond` is a condition used to determine whether this plugin should be
-          -- installed and loaded.
           cond = function()
             return vim.fn.executable 'make' == 1
           end,
         },
         { 'nvim-telescope/telescope-ui-select.nvim' },
+        { 'jvgrootveld/telescope-zoxide' },
       },
+      config = function()
+        require('telescope').setup({
+          defaults = {
+            mappings = {
+              i = {
+                ["<esc>"] = require("telescope.actions").close,
+              },
+            },
+            preview = { treesitter = false },
+          },
+        })
+        pcall(require('telescope').load_extension, 'fzf')
+        pcall(require('telescope').load_extension, 'ui-select')
+        pcall(require('telescope').load_extension, 'zoxide')
+      end
     },
     { 'mrjones2014/legendary.nvim', requires = 'kkharji/sqlite.lua' },
     {
@@ -135,6 +151,19 @@ require("lazy").setup({
     { 'stevearc/dressing.nvim' },
     { 'akinsho/toggleterm.nvim',  version = "*",      config = true },
     { 'ellisonleao/gruvbox.nvim', name = 'gruvbox' },
+    { 'nvim-lualine/lualine.nvim',
+      config = function()
+        require('lualine').setup {
+          options = {
+            theme = 'auto',
+            icons_enabled = true,
+            section_separators = '',
+            component_separators = '',
+            globalstatus = true,
+          },
+        }
+      end
+    },
 
     -- Code Navigation and Editing
     { "kylechui/nvim-surround",   version = "*",      event = "VeryLazy" },
@@ -189,8 +218,7 @@ require("lazy").setup({
         providers = {
           openai = {
             endpoint = "https://api.openai.com/v1",
-            model = "o4-mini", -- your desired model (or use gemini-2.5-pro, etc.)
-            timeout = 30000,   -- Timeout in milliseconds, increase this for reasoning models
+            model = "gpt-4.1", -- your desired model (or use gemini-2.5-pro, etc.)
           },
           ollama = { model = "qwen3:8b" },
         },
@@ -213,6 +241,19 @@ require("lazy").setup({
       event = "LspAttach",
       dependencies = { "neovim/nvim-lspconfig" },
       config = function() require("inlay-hints").setup() end
-    }
+    },
+    { 'rmagatti/auto-session',
+      config = function()
+        require('auto-session').setup {
+          log_level = 'error',
+          auto_session_suppress_dirs = { '~/', '~/Downloads', '/' },
+        }
+      end
+    },
+    { 'lewis6991/impatient.nvim',
+      config = function()
+        pcall(require, 'impatient')
+      end
+    },
   },
 })

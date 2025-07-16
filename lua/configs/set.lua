@@ -56,6 +56,8 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
+vim.opt.backupdir = vim.fn.stdpath('data') .. '/backup//'
+vim.opt.directory = vim.fn.stdpath('data') .. '/swap//'
 
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
@@ -67,12 +69,12 @@ vim.opt.background = "dark"
 vim.opt.mouse = 'a'
 vim.opt.updatetime = 150
 
--- Spell checking
-vim.opt.spell = true
-vim.opt.spelllang = { 'en' }
+-- Spell checking (disabled by default; toggle with Legendary)
+-- vim.opt.spell = true
+-- vim.opt.spelllang = { 'en' }
 
 -- https://github.com/epwalsh/obsidian.nvim/issues/286
-vim.opt_local.conceallevel = 2
+-- vim.opt_local.conceallevel = 2
 
 vim.diagnostic.config {
   virtual_lines = false,
@@ -102,11 +104,4 @@ vim.diagnostic.config {
   },
 }
 
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
-
+require('configs.autocmds')
